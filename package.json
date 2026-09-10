@@ -1,0 +1,19 @@
+{
+  "name": "aetheryon-icp-engine",
+  "version": "1.0.0",
+  "description": "AETHERYON Systems - ICP Segmentation Engine (Propuesta -> Pains -> ICP -> Contactos -> Pipeline -> Intelligence)",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-rebuild -f -w better-sqlite3"
+  },
+  "author": "AETHERYON Systems",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "better-sqlite3": "^11.10.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "electron": "^31.7.7"
+  }
+}

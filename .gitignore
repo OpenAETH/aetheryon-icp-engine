@@ -1,0 +1,21 @@
+node_modules/
+dist/
+out/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Añadido por GitDevCore
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+env/
+.env
+build/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
