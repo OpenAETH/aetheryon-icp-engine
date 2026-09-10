@@ -3,7 +3,7 @@
 Migración de la versión Tkinter/SQLite a Electron. Misma lógica de negocio,
 mismo schema, misma UI (tema oscuro con la paleta AETHERYON).
 
-Pipeline: **Propuesta → Pains → ICP Definition → Entity Management → Pipeline → Intelligence**
+Pipeline: **Propuesta → Pains → ICP & Search Definition → Acquisition → Entity Management → Pipeline → Intelligence**
 
 ## Setup
 
@@ -80,3 +80,23 @@ generar un `.exe`/`.dmg`/`.AppImage` instalable hace falta agregar
 `electron-builder` (o `electron-forge`) y su configuración de `build` en
 `package.json` — no se incluyó acá para no atar el proyecto a una config de
 firma/íconos que todavía no definiste.
+
+
+## ICP & Search Definition
+
+The ICP layer separates four concerns:
+
+`Offering → Pain → ICP → Search Configuration`
+
+Search Configuration stores acquisition recipes for platforms such as Apollo or LeadForge without coupling provider APIs to the ICP scoring engine. A single ICP can have multiple search configurations.
+
+The current implementation includes:
+- ICP definition and weighted evaluation.
+- Reusable Pain catalog with inline creation.
+- Search Configuration CRUD.
+- Apollo People Search fields.
+- Exclusions and Pain Signals.
+- Optional ICP and Offering links.
+- Configuration duplication.
+
+Provider API integration is intentionally outside this phase.

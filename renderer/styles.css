@@ -82,17 +82,28 @@ body {
 
 .card, fieldset {
   background: transparent; border: 1px solid var(--border); border-radius: 4px;
-  padding: 12px; margin: 0 0 10px;
+  padding: 12px; margin: 0 0 10px; min-width: 0;
 }
-fieldset legend { color: var(--gold); font-size: 11px; font-weight: 700; padding: 0 6px; }
+fieldset legend {
+  color: var(--gold); font-size: 11px; font-weight: 700; padding: 0 6px;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 
-.field-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.field-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; min-width: 0; }
 .field-row label { width: 120px; flex-shrink: 0; color: var(--text-dim); font-size: 11px; padding-top: 5px; }
 .field-row-inline { display: flex; gap: 22px; }
 .field-row-inline .field-row { flex: 1; }
 
+.offering-identity-grid, .offering-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.offering-identity-grid .field-row, .offering-detail-grid .field-row {
+  min-width: 0;
+}
+.offering-identity-grid .field-row label, .offering-detail-grid .field-row label { width: 105px; }
+
 input[type="text"], select, textarea {
-  flex: 1; background: var(--bg-field); color: var(--text); border: 1px solid var(--border);
+  flex: 1; min-width: 0; background: var(--bg-field); color: var(--text); border: 1px solid var(--border);
   border-radius: 3px; padding: 5px 7px; font-family: inherit; font-size: 12px;
 }
 input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--teal); }
@@ -153,7 +164,7 @@ tbody tr.selected td { background: var(--violet); color: var(--bg-root); }
 
 /* ---------------- Weights ---------------- */
 
-.weight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 16px; margin-bottom: 8px; }
+.weight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 6px 16px; margin-bottom: 8px; }
 .weight-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
 .weight-item .swatch { width: 8px; height: 8px; flex-shrink: 0; display: inline-block; }
 .weight-item input { width: 52px; flex: none; text-align: right; }
@@ -188,3 +199,172 @@ tbody tr.selected td { background: var(--violet); color: var(--bg-root); }
 ::-webkit-scrollbar-track { background: var(--bg-root); }
 ::-webkit-scrollbar-thumb { background: var(--bg-panel-alt); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+
+/* ============================================================
+   ICP & SEARCH DEFINITION v2
+   ============================================================ */
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px 20px;
+  margin-bottom: 14px;
+}
+.phase-badge, .card-kicker {
+  color: #00E5C0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.phase-badge {
+  border: 1px solid #262638;
+  background: #13131F;
+  border-radius: 999px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+.icp-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+.definition-grid {
+  display: grid;
+  grid-template-columns: minmax(430px, .9fr) minmax(560px, 1.35fr);
+  gap: 16px;
+  align-items: start;
+  flex-shrink: 0;
+}
+.definition-column {
+  min-width: 0;
+}
+.icp-tables-row {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 220px;
+}
+.icp-tables-row .table-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.icp-tables-row .table-search { flex: 1.3; }
+.icp-tables-row .table-icp { flex: 1; }
+.search-card {
+  border-color: #35354A;
+}
+.search-intro {
+  color: #8A8A9E;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 6px 0 14px;
+}
+.sub-card {
+  border: 1px solid #262638;
+  background: #0A0A15;
+  border-radius: 8px;
+  padding: 10px 12px 12px;
+  margin: 10px 0;
+}
+.sub-card legend {
+  color: #FFD166;
+  font-size: 11px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.tag-editor {
+  width: 100%;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+  margin-bottom: 7px;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #2F4E49;
+  background: #101F1D;
+  color: #00E5C0;
+  border-radius: 999px;
+  padding: 4px 8px 4px 10px;
+  font-size: 11px;
+}
+.tag button {
+  border: 0;
+  background: transparent;
+  color: #8A8A9E;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+.tag button:hover { color: #FF5C7A; }
+.tag-input-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.tag-input-row select,
+.tag-input-row input {
+  flex: 1;
+}
+.btn.small {
+  padding: 6px 9px;
+  font-size: 11px;
+}
+#search-table td, #search-table th {
+  white-space: nowrap;
+}
+#search-table td:nth-child(5),
+#search-table td:nth-child(6) {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   RESPONSIVE — breakpoints app-wide
+   Tiers: >1150px full desktop · 1150-1000px medio · <1000px angosto · <680px muy angosto
+   ============================================================ */
+
+/* ---- Tier: ICP tab collapses to 1 columna / tablas apiladas ---- */
+@media (max-width: 1150px) {
+  .definition-grid { grid-template-columns: 1fr; }
+  .icp-tables-row { flex-direction: column; }
+  .icp-tables-row .table-wrap.grow { min-height: 260px; }
+}
+
+/* ---- Tier: paneles de 2 columnas se apilan ---- */
+@media (max-width: 1000px) {
+  .two-col { flex-direction: column; }
+  .two-col > .panel { min-height: 380px; }
+  .field-row-inline { flex-direction: column; gap: 6px; }
+}
+
+/* ---- Tier: ventana angosta — formularios apilan label/input, tabs con scroll ---- */
+@media (max-width: 680px) {
+  .header-inner { padding: 10px 14px; }
+  .header-inner h1 { font-size: 15px; }
+  #tab-content { padding: 12px 14px; }
+  .tabs { overflow-x: auto; padding: 0 8px; }
+  .tab-btn { padding: 9px 11px; font-size: 11px; white-space: nowrap; }
+
+  .offering-identity-grid, .offering-detail-grid { grid-template-columns: 1fr; }
+
+  .field-row { flex-direction: column; align-items: stretch; gap: 3px; }
+  .field-row label { width: auto; padding-top: 0; }
+
+  .match-content { flex-direction: column; align-items: flex-start; }
+}
+

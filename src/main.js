@@ -111,6 +111,12 @@ function registerIpc() {
   ipcMain.handle("icps:save", (e, data) => db.saveIcp(data));
   ipcMain.handle("icps:delete", (e, id) => db.deleteIcp(id));
 
+  // Search configurations
+  ipcMain.handle("search-configurations:list", () => db.listSearchConfigurations());
+  ipcMain.handle("search-configurations:get", (e, id) => db.getSearchConfiguration(id));
+  ipcMain.handle("search-configurations:save", (e, data) => db.saveSearchConfiguration(data));
+  ipcMain.handle("search-configurations:delete", (e, id) => db.deleteSearchConfiguration(id));
+
   // Contacts
   ipcMain.handle("contacts:list", () => db.listContactsWithBestMatch());
   ipcMain.handle("contacts:get", (e, id) => db.getContactRaw(id));

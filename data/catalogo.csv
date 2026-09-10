@@ -1,0 +1,19 @@
+Línea,Producto / Servicio,Alcance / Propósito,Dinámica,Entregables / Resultado,Cotización
+AUDIT,DAE · Data Audit Express,"Auditoría de datos, reporting y operación analítica",72 hs,Diagnóstico + hallazgos + oportunidades + roadmap,USD 8.000 / USD 3.600 promo
+AUDIT,CAE · Code Audit Express,"Auditoría de código, arquitectura y deuda técnica",72 hs,Diagnóstico técnico + prioridades + roadmap,USD 8.000 / USD 3.600 promo
+ASSESSMENT,SAB · Strategic Assessment Bundle,"Assessment integral de negocio, datos y tecnología",1–2 semanas,Assessment estratégico + prioridades + roadmap,USD 15.000 / USD 6.750 promo
+DEVELOPMENT,Web / Business Application,Frontend + backend + autenticación + DB + lógica de negocio + APIs,Proyecto,Aplicación empresarial funcional,USD 8k–25k
+DEVELOPMENT,REST API,"API REST con FastAPI, endpoints, validaciones, auth, OpenAPI e integración DB",Proyecto,API documentada e integrada,USD 5k–15k
+DEVELOPMENT,Data Pipeline,"Ingesta, transformación, validación, ETL/ELT, scheduling y logging",Proyecto,Pipeline automatizado y trazable,USD 6k–18k
+DEVELOPMENT,Dashboard / BI,Modelo de datos + Power BI / Looker + KPIs + actualización automatizada,Proyecto,Dashboard operativo/ejecutivo,USD 4k–12k
+DEVELOPMENT,Database Engineering,"PostgreSQL / Supabase / SQL Server / MongoDB, modelado, queries, índices y migraciones",Proyecto,DB diseñada/optimizada/documentada,USD 4k–15k
+DEVELOPMENT,Integration / Automation,"APIs, webhooks, CRM, ERP, Sheets y automatizaciones",Proyecto,Integraciones y workflows automatizados,USD 5k–20k
+DEVELOPMENT,AI / LLM Integration,"LLM, RAG, agentes, tool calling, APIs e integración con sistemas",Proyecto,Solución IA integrada al entorno operativo,USD 8k–25k+
+IMPLEMENTATION,Deployment,"Cloud, variables, dominios, CI/CD, configuración y producción",Fase,Sistema desplegado y operativo,USD 2k–7k
+IMPLEMENTATION,Data Migration,"Migración, transformación, validación y reconciliación",Fase,Datos migrados y validados,USD 3k–12k
+IMPLEMENTATION,Integration Rollout,"Integración con sistemas productivos, pruebas y puesta en marcha",Fase,Integración productiva,USD 3k–10k
+IMPLEMENTATION,Production Handover,"Documentación, capacitación, runbook y transferencia",Fase,Operación transferida al cliente,USD 2k–5k
+SUPPORT,Technical Support,"Incidentes, diagnóstico, correcciones y asistencia",Mensual,Soporte técnico continuo,USD 1.5k–4k/mes
+SUPPORT,Maintenance,"Bugs, actualizaciones, dependencias, DB, APIs e infraestructura",Mensual,Mantenimiento preventivo/correctivo,USD 2k–5k/mes
+SUPPORT,Evolution,Nuevas funcionalidades y mejoras evolutivas,Bolsa / mensual,Evolución continua de la solución,USD 3k–8k+/mes
+SUPPORT,Monitoring & Optimization,"Logs, performance, disponibilidad, DB/API y observabilidad",Mensual,Monitoreo + optimización continua,USD 2k–6k/mes

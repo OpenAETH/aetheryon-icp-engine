@@ -27,6 +27,12 @@ contextBridge.exposeInMainWorld("api", {
     save: invoke("icps:save"),
     delete: invoke("icps:delete"),
   },
+  searchConfigurations: {
+    list: invoke("search-configurations:list"),
+    get: invoke("search-configurations:get"),
+    save: invoke("search-configurations:save"),
+    delete: invoke("search-configurations:delete"),
+  },
   contacts: {
     list: invoke("contacts:list"),
     get: invoke("contacts:get"),

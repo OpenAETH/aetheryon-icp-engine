@@ -35,12 +35,14 @@ const WEIGHT_BAR_COLORS = ["#00E5C0", "#FFD166", "#B066FF", "#5CC8FF", "#FF8FB3"
 let offeringId = null;
 let painId = null;
 let icpId = null;
+let searchConfigurationId = null;
 let contactId = null;
 let dealContactId = null;
 
 let selectedOfferingRow = null;
 let selectedPainRow = null;
 let selectedIcpRow = null;
+let selectedSearchRow = null;
 let selectedContactRow = null;
 
 // ============================================================
@@ -128,7 +130,7 @@ function switchTab(name) {
   document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
   document.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("active", p.id === `tab-${name}`));
 
-  if (name === "icp") refreshPainChoices();
+  if (name === "icp") { refreshPainChoices(); refreshOfferingsForSearch(); refreshSearchConfigurations(); }
   else if (name === "contacts") refreshContacts();
   else if (name === "pipeline") refreshPipeline();
   else if (name === "intelligence") refreshResults();
@@ -138,6 +140,42 @@ function switchTab(name) {
 // PROPUESTA -- Offerings
 // ============================================================
 
+function splitList(value) {
+  return String(value || "")
+    .split(/[,\\n]/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+}
+
+function selectedPainIds(selectId) {
+  return getSelectedOptionIds(document.getElementById(selectId));
+}
+
+function renderPainTags(selectId, containerId) {
+  const select = document.getElementById(selectId);
+  const container = document.getElementById(containerId);
+  if (!select || !container) return;
+  const selected = Array.from(select.selectedOptions);
+  container.innerHTML = selected.length
+    ? selected.map((o) => `<span class="tag">${escapeHtml(o.textContent)}<button type="button" data-pain-id="${o.value}" aria-label="Quitar pain">×</button></span>`).join("")
+    : '<span class="dim small">Sin pains vinculados</span>';
+  container.querySelectorAll("button[data-pain-id]").forEach((btn) => {
+    btn.onclick = () => {
+      const opt = Array.from(select.options).find((o) => o.value === btn.dataset.painId);
+      if (opt) opt.selected = false;
+      renderPainTags(selectId, containerId);
+    };
+  });
+}
+
+function renderPainPicker(selectId, pickerId) {
+  const select = document.getElementById(selectId);
+  const picker = document.getElementById(pickerId);
+  picker.innerHTML = '<option value="">Seleccionar pain existente...</option>' +
+    Array.from(select.options).filter((o) => !o.selected)
+      .map((o) => `<option value="${o.value}">${escapeHtml(o.textContent)}</option>`).join("");
+}
+
 async function refreshPainChoices() {
   const pains = await bridge.pains.list();
   const optionsHtml = pains
@@ -145,6 +183,30 @@ async function refreshPainChoices() {
     .join("");
   document.getElementById("offering-pains").innerHTML = optionsHtml;
   document.getElementById("icp-pains").innerHTML = optionsHtml;
+  renderPainPicker("offering-pains", "offering-pain-picker");
+  renderPainPicker("icp-pains", "icp-pain-picker");
+  renderPainTags("offering-pains", "offering-pain-tags");
+  renderPainTags("icp-pains", "icp-pain-tags");
+}
+
+async function createPainInline(inputId, category, selectId, tagContainerId, pickerId) {
+  const input = document.getElementById(inputId);
+  const name = input.value.trim();
+  if (!name) return;
+  try {
+    const id = await bridge.pains.save({ category, name, notes: "" });
+    await refreshPainChoices();
+    const select = document.getElementById(selectId);
+    const opt = Array.from(select.options).find((o) => Number(o.value) === Number(id));
+    if (opt) opt.selected = true;
+    renderPainPicker(selectId, pickerId);
+    renderPainTags(selectId, tagContainerId);
+    input.value = "";
+    await refreshPains();
+    await refreshOfferings();
+  } catch (e) {
+    await showModal("Pain", e.message);
+  }
 }
 
 async function refreshOfferings() {
@@ -154,8 +216,9 @@ async function refreshOfferings() {
     .map(
       (r) => `
       <tr data-id="${r.id}">
-        <td>${r.id}</td><td>${escapeHtml(r.kind)}</td><td>${escapeHtml(r.name)}</td>
-        <td>${escapeHtml(truncate(r.outcome, 60))}</td><td>${r.pains_count}</td>
+        <td>${r.id}</td><td>${escapeHtml(r.line || "—")}</td><td>${escapeHtml(r.name)}</td>
+        <td>${escapeHtml(r.dynamics || "—")}</td><td>${escapeHtml(truncate(r.outcome, 55))}</td>
+        <td>${escapeHtml(r.quotation || "—")}</td><td>${r.pains_count}</td>
       </tr>`
     )
     .join("");
@@ -166,20 +229,32 @@ async function loadOffering(id) {
   const data = await bridge.offerings.get(id);
   if (!data) return;
   offeringId = id;
-  document.getElementById("offering-kind").value = data.kind;
-  document.getElementById("offering-name").value = data.name;
+  document.getElementById("offering-kind").value = data.kind || "Producto";
+  document.getElementById("offering-line").value = data.line || "DEVELOPMENT";
+  document.getElementById("offering-name").value = data.name || "";
+  document.getElementById("offering-purpose").value = data.purpose || "";
+  document.getElementById("offering-dynamics").value = data.dynamics || "";
   document.getElementById("offering-outcome").value = data.outcome || "";
+  document.getElementById("offering-quotation").value = data.quotation || "";
   document.getElementById("offering-notes").value = data.notes || "";
   setSelectedOptionIds(document.getElementById("offering-pains"), data.pain_ids);
+  renderPainPicker("offering-pains", "offering-pain-picker");
+  renderPainTags("offering-pains", "offering-pain-tags");
 }
 
 function clearOfferingForm() {
   offeringId = null;
   document.getElementById("offering-kind").value = "Producto";
+  document.getElementById("offering-line").value = "DEVELOPMENT";
   document.getElementById("offering-name").value = "";
+  document.getElementById("offering-purpose").value = "";
+  document.getElementById("offering-dynamics").value = "";
   document.getElementById("offering-outcome").value = "";
+  document.getElementById("offering-quotation").value = "";
   document.getElementById("offering-notes").value = "";
   document.getElementById("offering-pains").selectedIndex = -1;
+  renderPainPicker("offering-pains", "offering-pain-picker");
+  renderPainTags("offering-pains", "offering-pain-tags");
 }
 
 async function saveOffering() {
@@ -192,8 +267,12 @@ async function saveOffering() {
   const data = {
     id: offeringId,
     kind: document.getElementById("offering-kind").value,
+    line: document.getElementById("offering-line").value,
     name,
+    purpose: document.getElementById("offering-purpose").value.trim(),
+    dynamics: document.getElementById("offering-dynamics").value.trim(),
     outcome: document.getElementById("offering-outcome").value.trim(),
+    quotation: document.getElementById("offering-quotation").value.trim(),
     notes: document.getElementById("offering-notes").value.trim(),
     pain_ids: getSelectedOptionIds(document.getElementById("offering-pains")),
   };
@@ -407,6 +486,8 @@ async function loadIcp(id) {
 
   setWeights(data);
   setSelectedOptionIds(document.getElementById("icp-pains"), data.pain_ids);
+  renderPainPicker("icp-pains", "icp-pain-picker");
+  renderPainTags("icp-pains", "icp-pain-tags");
 }
 
 function clearIcpForm() {
@@ -421,6 +502,8 @@ function clearIcpForm() {
 
   setWeights(WEIGHT_DEFAULTS);
   document.getElementById("icp-pains").selectedIndex = -1;
+  renderPainPicker("icp-pains", "icp-pain-picker");
+  renderPainTags("icp-pains", "icp-pain-tags");
 }
 
 async function saveIcp() {
@@ -489,9 +572,144 @@ async function deleteIcp() {
   await bridge.icps.delete(Number(selectedIcpRow));
   clearIcpForm();
   await refreshIcps();
+  await refreshOfferingsForSearch();
+  await refreshSearchConfigurations();
   await refreshContacts();
   await refreshResults();
   await refreshStatusBar();
+}
+
+// ============================================================
+// SEARCH CONFIGURATION
+// ============================================================
+
+function fillSelect(selectId, rows, placeholder, valueKey, labelKey) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` +
+    rows.map((r) => `<option value="${r[valueKey]}">${escapeHtml(r[labelKey])}</option>`).join("");
+}
+
+async function refreshOfferingsForSearch() {
+  const offerings = await bridge.offerings.list();
+  fillSelect("search-offering", offerings, "Seleccionar offering...", "id", "name");
+}
+
+function clearSearchConfiguration() {
+  searchConfigurationId = null;
+  ["search-code","search-name","search-location","search-seniorities","search-job_titles",
+   "search-company_sizes","search-industries","search-exclusions","search-pain_signals","search-notes"]
+    .forEach((id) => { document.getElementById(id).value = ""; });
+  document.getElementById("search-platform").value = "Apollo";
+  document.getElementById("search-object").value = "People Search";
+  document.getElementById("search-status").value = "Active";
+  document.getElementById("search-offering").value = "";
+}
+
+function setSearchArray(id, values) {
+  document.getElementById(id).value = (values || []).join(", ");
+}
+
+async function loadSearchConfiguration(id) {
+  const data = await bridge.searchConfigurations.get(Number(id));
+  if (!data) return;
+  searchConfigurationId = data.id;
+  document.getElementById("search-code").value = data.code || "";
+  document.getElementById("search-name").value = data.name || "";
+  document.getElementById("search-platform").value = data.platform || "Apollo";
+  document.getElementById("search-object").value = data.object_type || "People Search";
+  document.getElementById("search-status").value = data.status || "Active";
+  document.getElementById("search-location").value = data.location || "";
+  setSearchArray("search-seniorities", data.seniorities);
+  setSearchArray("search-job_titles", data.job_titles);
+  setSearchArray("search-company_sizes", data.company_sizes);
+  setSearchArray("search-industries", data.industries);
+  setSearchArray("search-exclusions", data.exclusions);
+  setSearchArray("search-pain_signals", data.pain_signals);
+  document.getElementById("search-offering").value = data.offering_id || "";
+  document.getElementById("search-notes").value = data.notes || "";
+}
+
+function searchFilterSummary(r) {
+  const titles = (r.job_titles || []).length;
+  const sizes = (r.company_sizes || []).length;
+  return `${r.location || "—"} · ${titles} titles · ${sizes} sizes`;
+}
+
+async function refreshSearchConfigurations() {
+  const rows = await bridge.searchConfigurations.list();
+  const tbody = document.querySelector("#search-table tbody");
+  tbody.innerHTML = rows.map((r) => `
+    <tr data-id="${r.id}">
+      <td class="mono">${escapeHtml(r.code)}</td>
+      <td>${escapeHtml(r.name)}</td>
+      <td>${escapeHtml(r.platform)}</td>
+      <td>${escapeHtml(r.icp_name || "—")}</td>
+      <td>${escapeHtml(searchFilterSummary(r))}</td>
+      <td>${escapeHtml((r.pain_signals || []).slice(0, 3).join(", ") || "—")}</td>
+      <td>${escapeHtml(r.status)}</td>
+    </tr>`).join("");
+}
+
+async function saveSearchConfiguration() {
+  const data = {
+    id: searchConfigurationId,
+    code: document.getElementById("search-code").value.trim(),
+    name: document.getElementById("search-name").value.trim(),
+    platform: document.getElementById("search-platform").value,
+    object_type: document.getElementById("search-object").value,
+    icp_id: icpId,
+    offering_id: Number(document.getElementById("search-offering").value) || null,
+    status: document.getElementById("search-status").value,
+    location: document.getElementById("search-location").value.trim(),
+    company_sizes: splitList(document.getElementById("search-company_sizes").value),
+    seniorities: splitList(document.getElementById("search-seniorities").value),
+    job_titles: splitList(document.getElementById("search-job_titles").value),
+    industries: splitList(document.getElementById("search-industries").value),
+    exclusions: splitList(document.getElementById("search-exclusions").value),
+    pain_signals: splitList(document.getElementById("search-pain_signals").value),
+    notes: document.getElementById("search-notes").value.trim(),
+  };
+  try {
+    await bridge.searchConfigurations.save(data);
+    clearSearchConfiguration();
+    await refreshSearchConfigurations();
+    await showModal("AETHERYON", "Search configuration guardada.");
+  } catch (e) {
+    await showModal("Search", e.message);
+  }
+}
+
+async function duplicateSearchConfiguration() {
+  if (!searchConfigurationId) {
+    await showModal("Search", "Seleccioná una configuración para duplicar.");
+    return;
+  }
+  const data = await bridge.searchConfigurations.get(searchConfigurationId);
+  if (!data) return;
+  const base = data.code || "SEARCH-001";
+  const match = base.match(/^(.*?)(\\d+)$/);
+  let code = match ? `${match[1]}${String(Number(match[2]) + 1).padStart(match[2].length, "0")}` : `${base}-COPY`;
+  const existing = await bridge.searchConfigurations.list();
+  const codes = new Set(existing.map((x) => x.code));
+  while (codes.has(code)) code += "-COPY";
+  data.id = null;
+  data.code = code;
+  data.name = `${data.name} · Copy`;
+  await bridge.searchConfigurations.save(data);
+  await refreshSearchConfigurations();
+  await loadSearchConfiguration((await bridge.searchConfigurations.list())[0].id);
+}
+
+async function deleteSearchConfiguration() {
+  if (!searchConfigurationId) {
+    await showModal("Search", "Seleccioná una configuración.");
+    return;
+  }
+  if (!(await showModal("Confirmar", "¿Eliminar esta search configuration?", { confirm: true }))) return;
+  await bridge.searchConfigurations.delete(searchConfigurationId);
+  clearSearchConfiguration();
+  await refreshSearchConfigurations();
 }
 
 // ============================================================
@@ -814,6 +1032,18 @@ function wireEvents() {
   document.getElementById("offering-new").onclick = clearOfferingForm;
   document.getElementById("offering-save").onclick = saveOffering;
   document.getElementById("offering-delete").onclick = deleteOffering;
+  document.getElementById("offering-pain-add").onclick = () => {
+    const picker = document.getElementById("offering-pain-picker");
+    if (picker.value) {
+      const opt = Array.from(document.getElementById("offering-pains").options).find((o) => o.value === picker.value);
+      if (opt) opt.selected = true;
+      picker.value = "";
+      renderPainPicker("offering-pains", "offering-pain-picker");
+      renderPainTags("offering-pains", "offering-pain-tags");
+    }
+  };
+  document.getElementById("offering-new-pain-add").onclick = () =>
+    createPainInline("offering-new-pain", "General", "offering-pains", "offering-pain-tags", "offering-pain-picker");
 
   document.getElementById("pain-new").onclick = clearPainForm;
   document.getElementById("pain-save").onclick = savePain;
@@ -822,6 +1052,23 @@ function wireEvents() {
   document.getElementById("icp-new").onclick = clearIcpForm;
   document.getElementById("icp-save").onclick = saveIcp;
   document.getElementById("icp-delete").onclick = deleteIcp;
+  document.getElementById("icp-pain-add").onclick = () => {
+    const picker = document.getElementById("icp-pain-picker");
+    if (picker.value) {
+      const opt = Array.from(document.getElementById("icp-pains").options).find((o) => o.value === picker.value);
+      if (opt) opt.selected = true;
+      picker.value = "";
+      renderPainPicker("icp-pains", "icp-pain-picker");
+      renderPainTags("icp-pains", "icp-pain-tags");
+    }
+  };
+  document.getElementById("icp-new-pain-add").onclick = () =>
+    createPainInline("icp-new-pain", "General", "icp-pains", "icp-pain-tags", "icp-pain-picker");
+
+  document.getElementById("search-new").onclick = clearSearchConfiguration;
+  document.getElementById("search-save").onclick = saveSearchConfiguration;
+  document.getElementById("search-duplicate").onclick = duplicateSearchConfiguration;
+  document.getElementById("search-delete").onclick = deleteSearchConfiguration;
 
   document.getElementById("contact-new").onclick = clearContactForm;
   document.getElementById("contact-add").onclick = addContact;
@@ -837,6 +1084,7 @@ function wireEvents() {
   wireTableSelection("offering-table", (id) => (selectedOfferingRow = id), (id) => loadOffering(Number(id)));
   wireTableSelection("pain-table", (id) => (selectedPainRow = id), (id) => loadPain(Number(id)));
   wireTableSelection("icp-table", (id) => (selectedIcpRow = id), (id) => loadIcp(Number(id)));
+  wireTableSelection("search-table", (id) => (selectedSearchRow = id), (id) => loadSearchConfiguration(Number(id)));
   wireTableSelection("contact-table", (id) => (selectedContactRow = id), (id) => loadContact(Number(id)));
   wireTableSelection("pipeline-table", () => {}, (id) => loadDeal(id));
 
@@ -851,6 +1099,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   await refreshOfferings();
   await refreshPains();
   await refreshIcps();
+  await refreshOfferingsForSearch();
+  await refreshSearchConfigurations();
   await refreshContacts();
   await refreshPipeline();
   await refreshResults();

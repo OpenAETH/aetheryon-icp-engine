@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>AETHERYON Systems · ICP Segmentation Engine</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="accent-bar"></div>
+  <div class="header-inner">
+    <h1>AETHERYON SYSTEMS</h1>
+    <p class="subtitle">ICP SEGMENTATION ENGINE · Propuesta → Pains → ICP Definition → Entity Management → Pipeline → Intelligence</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="propuesta">1 · Propuesta</button>
+  <button class="tab-btn" data-tab="icp">2 · ICP &amp; Search</button>
+  <button class="tab-btn" data-tab="contacts">3 · Entity Management</button>
+  <button class="tab-btn" data-tab="pipeline">4 · Pipeline</button>
+  <button class="tab-btn" data-tab="intelligence">5 · Intelligence</button>
+</nav>
+
+<main id="tab-content">
+
+  <!-- ============ 1. PROPUESTA ============ -->
+  <section id="tab-propuesta" class="tab-panel active">
+    <p class="tagline">No vendemos la lista: vendemos resultados. "Integramos información dispersa y procesos
+      manuales en sistemas operacionales observables y accionables" — boutique todo terreno.</p>
+
+    <div class="two-col">
+      <div class="panel">
+        <h2 class="section-title">Productos &amp; Servicios</h2>
+        <div class="card">
+          <div class="offering-identity-grid">
+            <div class="field-row">
+              <label>Tipo</label>
+              <select id="offering-kind">
+                <option>Producto</option>
+                <option>Servicio</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Línea</label>
+              <select id="offering-line">
+                <option value="AUDIT">AUDIT</option>
+                <option value="ASSESSMENT">ASSESSMENT</option>
+                <option value="DEVELOPMENT">DEVELOPMENT</option>
+                <option value="IMPLEMENTATION">IMPLEMENTATION</option>
+                <option value="SUPPORT">SUPPORT</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <label>Producto / Servicio</label>
+            <input type="text" id="offering-name" placeholder="DAE · Data Audit Express">
+          </div>
+          <div class="field-row">
+            <label>Propósito</label>
+            <textarea id="offering-purpose" rows="2" placeholder="Auditoría de datos, reporting y operación analítica"></textarea>
+          </div>
+          <div class="offering-detail-grid">
+            <div class="field-row">
+              <label>Dinámica</label>
+              <input type="text" id="offering-dynamics" placeholder="72 hs">
+            </div>
+            <div class="field-row">
+              <label>Cotización</label>
+              <input type="text" id="offering-quotation" placeholder="USD 8.000 / USD 3.600 promo">
+            </div>
+          </div>
+          <div class="field-row">
+            <label>Resultado<br><span class="hint">(entregable)</span></label>
+            <textarea id="offering-outcome" rows="2" placeholder="Diagnóstico + hallazgos + oportunidades + roadmap"></textarea>
+          </div>
+          <div class="field-row">
+            <label>Notes</label>
+            <textarea id="offering-notes" rows="2"></textarea>
+          </div>
+          <div class="field-row">
+            <label>Pains que<br>resuelve</label>
+            <div class="tag-editor">
+              <div id="offering-pain-tags" class="tag-list"></div>
+              <div class="tag-input-row">
+                <select id="offering-pain-picker"></select>
+                <button type="button" class="btn small" id="offering-pain-add">+ Pain</button>
+              </div>
+              <div class="tag-input-row">
+                <input type="text" id="offering-new-pain" placeholder="Nuevo pain..." />
+                <button type="button" class="btn small" id="offering-new-pain-add">Crear</button>
+              </div>
+            </div>
+            <select id="offering-pains" multiple hidden></select>
+          </div>
+          <div class="button-row">
+            <button type="button" class="btn" id="offering-new">Nuevo</button>
+            <button type="button" class="btn accent" id="offering-save">Guardar Offering</button>
+            <button type="button" class="btn danger" id="offering-delete">Eliminar</button>
+          </div>
+        </div>
+        <div class="table-wrap grow">
+          <table id="offering-table">
+            <thead><tr><th>ID</th><th>Línea</th><th>Producto / Servicio</th><th>Dinámica</th><th>Resultado</th><th>Cotización</th><th>Pains</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">Pains</h2>
+        <div class="card">
+          <div class="field-row">
+            <label>Categoría</label>
+            <input type="text" id="pain-category" list="pain-category-options">
+            <datalist id="pain-category-options">
+              <option value="Datos"></option>
+              <option value="Operaciones"></option>
+              <option value="Management"></option>
+              <option value="IA"></option>
+            </datalist>
+          </div>
+          <div class="field-row">
+            <label>Nombre</label>
+            <input type="text" id="pain-name">
+          </div>
+          <div class="field-row">
+            <label>Notes</label>
+            <textarea id="pain-notes" rows="2"></textarea>
+          </div>
+          <div class="button-row">
+            <button type="button" class="btn" id="pain-new">Nuevo</button>
+            <button type="button" class="btn accent" id="pain-save">Guardar Pain</button>
+            <button type="button" class="btn danger" id="pain-delete">Eliminar</button>
+          </div>
+        </div>
+        <div class="table-wrap grow">
+          <table id="pain-table">
+            <thead><tr><th>ID</th><th>Categoría</th><th>Pain</th><th>Offerings</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. ICP & SEARCH DEFINITION ============ -->
+  <section id="tab-icp" class="tab-panel">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">ICP &amp; SEARCH DEFINITION</h2>
+        <p class="dim small">Definimos quién encaja, qué pain buscamos y cómo lo encontramos. La búsqueda es receta comercial, no scoring.</p>
+      </div>
+      <div class="phase-badge">PHASE 1 · ICP → SEARCH → LEADS</div>
+    </div>
+
+    <div class="definition-grid">
+      <div class="definition-column">
+        <div class="card">
+          <div class="card-kicker">01 · ICP</div>
+          <div class="field-row">
+            <label>Name</label><input type="text" id="icp-name" placeholder="Technical Decision Makers">
+          </div>
+          <div class="field-row">
+            <label>Status</label>
+            <select id="icp-status"><option>Active</option><option>Inactive</option><option>Draft</option></select>
+          </div>
+          <div class="field-row">
+            <label>Description</label><textarea id="icp-description" rows="2"></textarea>
+          </div>
+        </div>
+
+        <fieldset class="card">
+          <legend>ICP Criteria</legend>
+          <div class="field-row"><label>Job Titles</label><textarea id="icp-job_titles" rows="2" placeholder="CTO, CIO, COO..."></textarea></div>
+          <div class="field-row"><label>Companies</label><textarea id="icp-companies" rows="2"></textarea></div>
+          <div class="field-row"><label>Locations</label><textarea id="icp-locations" rows="2" placeholder="Argentina, LATAM..."></textarea></div>
+          <div class="field-row"><label>Industries</label><textarea id="icp-industries" rows="2" placeholder="Software, Manufacturing..."></textarea></div>
+          <div class="field-row"><label>Keywords</label><textarea id="icp-keywords" rows="2"></textarea></div>
+          <div class="field-row"><label>Notes</label><textarea id="icp-notes" rows="2"></textarea></div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>ICP Evaluation Model</legend>
+          <div class="dim small">Estos pesos determinan el match del contacto. No son filtros de Apollo.</div>
+          <div class="weight-grid" id="weight-grid"></div>
+          <div class="weight-bar"><canvas id="weight-canvas"></canvas></div>
+          <div class="weight-total" id="weight-total">Total: 100 / 100 ✓</div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>Pains típicos de este ICP</legend>
+          <div id="icp-pain-tags" class="tag-list"></div>
+          <div class="tag-input-row">
+            <select id="icp-pain-picker"></select>
+            <button type="button" class="btn small" id="icp-pain-add">+ Pain</button>
+          </div>
+          <div class="tag-input-row">
+            <input type="text" id="icp-new-pain" placeholder="Nuevo pain..." />
+            <button type="button" class="btn small" id="icp-new-pain-add">Crear</button>
+          </div>
+          <select id="icp-pains" multiple hidden></select>
+        </fieldset>
+
+        <div class="button-row">
+          <button type="button" class="btn" id="icp-new">Nuevo</button>
+          <button type="button" class="btn accent" id="icp-save">Guardar ICP</button>
+          <button type="button" class="btn danger" id="icp-delete">Eliminar</button>
+        </div>
+      </div>
+
+      <div class="definition-column">
+        <div class="card search-card">
+          <div class="card-kicker">02 · SEARCH CONFIGURATION</div>
+          <div class="search-intro">Una misma definición de ICP puede tener múltiples recetas de prospección. Apollo es un canal de adquisición, no el ICP.</div>
+
+          <div class="field-row-inline">
+            <div class="field-row"><label>ID</label><input type="text" id="search-code" placeholder="APOLLO-001"></div>
+            <div class="field-row"><label>Nombre</label><input type="text" id="search-name" placeholder="Growth + Technical Pain"></div>
+          </div>
+
+          <div class="field-row-inline">
+            <div class="field-row"><label>Platform</label><select id="search-platform"><option>Apollo</option><option>LeadForge</option><option>Manual</option></select></div>
+            <div class="field-row"><label>Object</label><select id="search-object"><option>People Search</option><option>Company Search</option></select></div>
+            <div class="field-row"><label>Status</label><select id="search-status"><option>Active</option><option>Draft</option><option>Inactive</option></select></div>
+          </div>
+
+          <fieldset class="sub-card">
+            <legend>Person filters</legend>
+            <div class="field-row"><label>Location</label><input type="text" id="search-location" placeholder="Argentina"></div>
+            <div class="field-row"><label>Seniority</label><input type="text" id="search-seniorities" placeholder="C-Suite, VP, Head, Director"></div>
+            <div class="field-row"><label>Job Titles</label><textarea id="search-job_titles" rows="3" placeholder="CTO, CIO, COO, VP Engineering..."></textarea></div>
+          </fieldset>
+
+          <fieldset class="sub-card">
+            <legend>Company filters</legend>
+            <div class="field-row"><label>Company Size</label><input type="text" id="search-company_sizes" placeholder="11-50, 51-200, 201-500"></div>
+            <div class="field-row"><label>Industries</label><textarea id="search-industries" rows="2" placeholder="Software, SaaS, Manufacturing..."></textarea></div>
+          </fieldset>
+
+          <fieldset class="sub-card">
+            <legend>Exclusions &amp; Pain Signals</legend>
+            <div class="field-row"><label>Exclude</label><textarea id="search-exclusions" rows="2" placeholder="Recruiter, HR, Sales, Marketing..."></textarea></div>
+            <div class="field-row"><label>Pain Signals</label><textarea id="search-pain_signals" rows="2" placeholder="manual reporting, fragmented data, technical debt..."></textarea></div>
+          </fieldset>
+
+          <div class="field-row"><label>Offering</label><select id="search-offering"></select></div>
+          <div class="field-row"><label>Notes</label><textarea id="search-notes" rows="2"></textarea></div>
+
+          <div class="button-row">
+            <button type="button" class="btn" id="search-new">Nuevo</button>
+            <button type="button" class="btn accent" id="search-save">Guardar Search</button>
+            <button type="button" class="btn" id="search-duplicate">Duplicar</button>
+            <button type="button" class="btn danger" id="search-delete">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="table-wrap grow">
+          <table id="search-table">
+            <thead><tr><th>ID</th><th>Search</th><th>Platform</th><th>Target ICP</th><th>Filters</th><th>Pains</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap">
+          <table id="icp-table">
+            <thead><tr><th>ID</th><th>ICP</th><th>Industries</th><th>Locations</th><th>Job Titles</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. ENTITY MANAGEMENT ============ -->
+  <section id="tab-contacts" class="tab-panel">
+    <h2 class="section-title">CONTACT PROFILE</h2>
+    <div class="two-col fixed">
+      <fieldset class="card">
+        <legend>Contacto</legend>
+        <div class="field-row"><label>Nombre *</label><input type="text" id="contact-name"></div>
+        <div class="field-row"><label>Job Title</label><input type="text" id="contact-title"></div>
+        <div class="field-row"><label>Email</label><input type="text" id="contact-email"></div>
+        <div class="field-row"><label>LinkedIn</label><input type="text" id="contact-linkedin"></div>
+      </fieldset>
+      <fieldset class="card">
+        <legend>Organización</legend>
+        <div class="field-row"><label>Nombre</label><input type="text" id="contact-org"></div>
+        <div class="field-row"><label>Location</label><input type="text" id="contact-location"></div>
+        <div class="field-row"><label>Industria</label><input type="text" id="contact-industry"></div>
+      </fieldset>
+    </div>
+
+    <fieldset class="card match-card">
+      <legend>Mejor ICP Match</legend>
+      <div class="match-content">
+        <div id="contact-badge" class="badge">—</div>
+        <div class="match-info">
+          <div id="contact-best-icp" class="match-title">Sin evaluar</div>
+          <div id="contact-score" class="mono dim">0 / 100</div>
+          <div id="contact-pains" class="dim small">Pains: —</div>
+          <div id="contact-offerings" class="gold small">Propuesta sugerida: —</div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="button-row">
+      <button type="button" class="btn" id="contact-new">Nuevo</button>
+      <button type="button" class="btn accent" id="contact-add">Agregar contacto</button>
+      <button type="button" class="btn" id="contact-update">Actualizar</button>
+      <button type="button" class="btn" id="contact-reevaluate">⚡ Reevaluar</button>
+    </div>
+
+    <div class="table-wrap grow">
+      <table id="contact-table">
+        <thead><tr><th>ID</th><th>Name</th><th>Job Title</th><th>Organization</th><th>Email</th><th>Best ICP</th><th>Score</th><th>Class</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 4. PIPELINE ============ -->
+  <section id="tab-pipeline" class="tab-panel">
+    <h2 class="section-title">CIERRE &amp; SEGUIMIENTO</h2>
+    <fieldset class="card">
+      <legend>Actualizar deal</legend>
+      <div id="deal-contact-label" class="match-title">Seleccioná un contacto en la tabla ↓</div>
+      <div class="field-row-inline">
+        <div class="field-row">
+          <label>Etapa</label>
+          <select id="deal-stage">
+            <option>Prospecting</option>
+            <option>Contactado</option>
+            <option>Propuesta Enviada</option>
+            <option>Negociación</option>
+            <option>Ganado</option>
+            <option>Perdido</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Próximo seguimiento</label>
+          <input type="text" id="deal-follow-up" placeholder="YYYY-MM-DD">
+        </div>
+      </div>
+      <div class="field-row"><label>Notas</label><textarea id="deal-notes" rows="3"></textarea></div>
+      <div id="deal-recommendation" class="dim small"></div>
+    </fieldset>
+
+    <div class="button-row">
+      <button type="button" class="btn accent" id="deal-save">Guardar deal</button>
+      <button type="button" class="btn" id="deal-clear">Limpiar selección</button>
+    </div>
+
+    <div class="table-wrap grow">
+      <table id="pipeline-table">
+        <thead><tr><th>ID</th><th>Contact</th><th>Organization</th><th>Etapa</th><th>Próximo seguimiento</th><th>Score</th><th>Class</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 5. INTELLIGENCE ============ -->
+  <section id="tab-intelligence" class="tab-panel">
+    <h2 class="section-title">ICP INTELLIGENCE</h2>
+    <p class="dim">Ranking de contactos por ICP Score y evidencia de matching.</p>
+    <div class="table-wrap grow">
+      <table id="results-table">
+        <thead><tr><th>Contact</th><th>Job Title</th><th>Company</th><th>ICP</th><th>Score</th><th>Class</th><th>Evidence</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="button-row right">
+      <button type="button" class="btn accent" id="recalc-all">⟳ Recalcular todo</button>
+      <button type="button" class="btn" id="refresh-intelligence">↻ Actualizar Intelligence</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="status-bar">
+  <span id="status-text"></span>
+</footer>
+
+<div id="modal-root"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

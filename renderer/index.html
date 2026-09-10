@@ -18,7 +18,7 @@
 
 <nav class="tabs">
   <button class="tab-btn active" data-tab="propuesta">1 · Propuesta</button>
-  <button class="tab-btn" data-tab="icp">2 · ICP Definition</button>
+  <button class="tab-btn" data-tab="icp">2 · ICP &amp; Search</button>
   <button class="tab-btn" data-tab="contacts">3 · Entity Management</button>
   <button class="tab-btn" data-tab="pipeline">4 · Pipeline</button>
   <button class="tab-btn" data-tab="intelligence">5 · Intelligence</button>
@@ -35,20 +35,47 @@
       <div class="panel">
         <h2 class="section-title">Productos &amp; Servicios</h2>
         <div class="card">
-          <div class="field-row">
-            <label>Tipo</label>
-            <select id="offering-kind">
-              <option>Producto</option>
-              <option>Servicio</option>
-            </select>
+          <div class="offering-identity-grid">
+            <div class="field-row">
+              <label>Tipo</label>
+              <select id="offering-kind">
+                <option>Producto</option>
+                <option>Servicio</option>
+                <option>Proyecto</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Línea</label>
+              <select id="offering-line">
+                <option value="AUDIT">AUDIT</option>
+                <option value="ASSESSMENT">ASSESSMENT</option>
+                <option value="DEVELOPMENT">DEVELOPMENT</option>
+                <option value="IMPLEMENTATION">IMPLEMENTATION</option>
+                <option value="SUPPORT">SUPPORT</option>
+              </select>
+            </div>
           </div>
           <div class="field-row">
-            <label>Nombre</label>
-            <input type="text" id="offering-name">
+            <label>Producto / Servicio</label>
+            <input type="text" id="offering-name" placeholder="DAE · Data Audit Express">
           </div>
           <div class="field-row">
-            <label>Resultado<br><span class="hint">(no la feature)</span></label>
-            <textarea id="offering-outcome" rows="2"></textarea>
+            <label>Propósito</label>
+            <textarea id="offering-purpose" rows="2" placeholder="Auditoría de datos, reporting y operación analítica"></textarea>
+          </div>
+          <div class="offering-detail-grid">
+            <div class="field-row">
+              <label>Dinámica</label>
+              <input type="text" id="offering-dynamics" placeholder="72 hs">
+            </div>
+            <div class="field-row">
+              <label>Cotización</label>
+              <input type="text" id="offering-quotation" placeholder="USD 8.000 / USD 3.600 promo">
+            </div>
+          </div>
+          <div class="field-row">
+            <label>Resultado<br><span class="hint">(entregable)</span></label>
+            <textarea id="offering-outcome" rows="2" placeholder="Diagnóstico + hallazgos + oportunidades + roadmap"></textarea>
           </div>
           <div class="field-row">
             <label>Notes</label>
@@ -56,7 +83,18 @@
           </div>
           <div class="field-row">
             <label>Pains que<br>resuelve</label>
-            <select id="offering-pains" multiple size="5"></select>
+            <div class="tag-editor">
+              <div id="offering-pain-tags" class="tag-list"></div>
+              <div class="tag-input-row">
+                <select id="offering-pain-picker"></select>
+                <button type="button" class="btn small" id="offering-pain-add">+ Pain</button>
+              </div>
+              <div class="tag-input-row">
+                <input type="text" id="offering-new-pain" placeholder="Nuevo pain..." />
+                <button type="button" class="btn small" id="offering-new-pain-add">Crear</button>
+              </div>
+            </div>
+            <select id="offering-pains" multiple hidden></select>
           </div>
           <div class="button-row">
             <button type="button" class="btn" id="offering-new">Nuevo</button>
@@ -66,7 +104,7 @@
         </div>
         <div class="table-wrap grow">
           <table id="offering-table">
-            <thead><tr><th>ID</th><th>Tipo</th><th>Nombre</th><th>Resultado</th><th>Pains</th></tr></thead>
+            <thead><tr><th>ID</th><th>Línea</th><th>Producto / Servicio</th><th>Dinámica</th><th>Resultado</th><th>Cotización</th><th>Pains</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -109,42 +147,46 @@
     </div>
   </section>
 
-  <!-- ============ 2. ICP DEFINITION ============ -->
+  <!-- ============ 2. ICP & SEARCH DEFINITION ============ -->
   <section id="tab-icp" class="tab-panel">
-    <div class="split">
-      <div class="form-col">
-        <h2 class="section-title">ICP PROFILE</h2>
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">ICP &amp; SEARCH DEFINITION</h2>
+        <p class="dim small">Definimos quién encaja, qué pain buscamos y cómo lo encontramos. La búsqueda es receta comercial, no scoring.</p>
+      </div>
+      <div class="phase-badge">PHASE 1 · ICP → SEARCH → LEADS</div>
+    </div>
+
+    <div class="icp-layout">
+    <div class="definition-grid">
+      <div class="definition-column">
         <div class="card">
+          <div class="card-kicker">01 · ICP</div>
           <div class="field-row">
-            <label>Name</label>
-            <input type="text" id="icp-name">
+            <label>Name</label><input type="text" id="icp-name" placeholder="Technical Decision Makers">
           </div>
           <div class="field-row">
             <label>Status</label>
-            <select id="icp-status">
-              <option>Active</option>
-              <option>Inactive</option>
-              <option>Draft</option>
-            </select>
+            <select id="icp-status"><option>Active</option><option>Inactive</option><option>Draft</option></select>
           </div>
           <div class="field-row">
-            <label>Description</label>
-            <textarea id="icp-description" rows="2"></textarea>
+            <label>Description</label><textarea id="icp-description" rows="2"></textarea>
           </div>
         </div>
 
         <fieldset class="card">
-          <legend>Criteria</legend>
-          <div class="field-row"><label>Job Titles</label><textarea id="icp-job_titles" rows="2"></textarea></div>
+          <legend>ICP Criteria</legend>
+          <div class="field-row"><label>Job Titles</label><textarea id="icp-job_titles" rows="2" placeholder="CTO, CIO, COO..."></textarea></div>
           <div class="field-row"><label>Companies</label><textarea id="icp-companies" rows="2"></textarea></div>
-          <div class="field-row"><label>Locations</label><textarea id="icp-locations" rows="2"></textarea></div>
-          <div class="field-row"><label>Industries</label><textarea id="icp-industries" rows="2"></textarea></div>
+          <div class="field-row"><label>Locations</label><textarea id="icp-locations" rows="2" placeholder="Argentina, LATAM..."></textarea></div>
+          <div class="field-row"><label>Industries</label><textarea id="icp-industries" rows="2" placeholder="Software, Manufacturing..."></textarea></div>
           <div class="field-row"><label>Keywords</label><textarea id="icp-keywords" rows="2"></textarea></div>
           <div class="field-row"><label>Notes</label><textarea id="icp-notes" rows="2"></textarea></div>
         </fieldset>
 
         <fieldset class="card">
-          <legend>Scoring Weights</legend>
+          <legend>ICP Evaluation Model</legend>
+          <div class="dim small">Estos pesos determinan el match del contacto. No son filtros de Apollo.</div>
           <div class="weight-grid" id="weight-grid"></div>
           <div class="weight-bar"><canvas id="weight-canvas"></canvas></div>
           <div class="weight-total" id="weight-total">Total: 100 / 100 ✓</div>
@@ -152,7 +194,16 @@
 
         <fieldset class="card">
           <legend>Pains típicos de este ICP</legend>
-          <select id="icp-pains" multiple size="6"></select>
+          <div id="icp-pain-tags" class="tag-list"></div>
+          <div class="tag-input-row">
+            <select id="icp-pain-picker"></select>
+            <button type="button" class="btn small" id="icp-pain-add">+ Pain</button>
+          </div>
+          <div class="tag-input-row">
+            <input type="text" id="icp-new-pain" placeholder="Nuevo pain..." />
+            <button type="button" class="btn small" id="icp-new-pain-add">Crear</button>
+          </div>
+          <select id="icp-pains" multiple hidden></select>
         </fieldset>
 
         <div class="button-row">
@@ -162,15 +213,69 @@
         </div>
       </div>
 
-      <div class="table-col">
-        <h2 class="section-title">ICPs Registrados</h2>
-        <div class="table-wrap grow">
-          <table id="icp-table">
-            <thead><tr><th>ID</th><th>ICP</th><th>Industries</th><th>Locations</th><th>Job Titles</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
+      <div class="definition-column">
+        <div class="card search-card">
+          <div class="card-kicker">02 · SEARCH CONFIGURATION</div>
+          <div class="search-intro">Una misma definición de ICP puede tener múltiples recetas de prospección. Apollo es un canal de adquisición, no el ICP.</div>
+
+          <div class="field-row-inline">
+            <div class="field-row"><label>ID</label><input type="text" id="search-code" placeholder="APOLLO-001"></div>
+            <div class="field-row"><label>Nombre</label><input type="text" id="search-name" placeholder="Growth + Technical Pain"></div>
+          </div>
+
+          <div class="field-row-inline">
+            <div class="field-row"><label>Platform</label><select id="search-platform"><option>Apollo</option><option>LeadForge</option><option>Manual</option></select></div>
+            <div class="field-row"><label>Object</label><select id="search-object"><option>People Search</option><option>Company Search</option></select></div>
+            <div class="field-row"><label>Status</label><select id="search-status"><option>Active</option><option>Draft</option><option>Inactive</option></select></div>
+          </div>
+
+          <fieldset class="sub-card">
+            <legend>Person filters</legend>
+            <div class="field-row"><label>Location</label><input type="text" id="search-location" placeholder="Argentina"></div>
+            <div class="field-row"><label>Seniority</label><input type="text" id="search-seniorities" placeholder="C-Suite, VP, Head, Director"></div>
+            <div class="field-row"><label>Job Titles</label><textarea id="search-job_titles" rows="3" placeholder="CTO, CIO, COO, VP Engineering..."></textarea></div>
+          </fieldset>
+
+          <fieldset class="sub-card">
+            <legend>Company filters</legend>
+            <div class="field-row"><label>Company Size</label><input type="text" id="search-company_sizes" placeholder="11-50, 51-200, 201-500"></div>
+            <div class="field-row"><label>Industries</label><textarea id="search-industries" rows="2" placeholder="Software, SaaS, Manufacturing..."></textarea></div>
+          </fieldset>
+
+          <fieldset class="sub-card">
+            <legend>Exclusions &amp; Pain Signals</legend>
+            <div class="field-row"><label>Exclude</label><textarea id="search-exclusions" rows="2" placeholder="Recruiter, HR, Sales, Marketing..."></textarea></div>
+            <div class="field-row"><label>Pain Signals</label><textarea id="search-pain_signals" rows="2" placeholder="manual reporting, fragmented data, technical debt..."></textarea></div>
+          </fieldset>
+
+          <div class="field-row"><label>Offering</label><select id="search-offering"></select></div>
+          <div class="field-row"><label>Notes</label><textarea id="search-notes" rows="2"></textarea></div>
+
+          <div class="button-row">
+            <button type="button" class="btn" id="search-new">Nuevo</button>
+            <button type="button" class="btn accent" id="search-save">Guardar Search</button>
+            <button type="button" class="btn" id="search-duplicate">Duplicar</button>
+            <button type="button" class="btn danger" id="search-delete">Eliminar</button>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="icp-tables-row">
+      <div class="table-wrap grow table-search">
+        <table id="search-table">
+          <thead><tr><th>ID</th><th>Search</th><th>Platform</th><th>Target ICP</th><th>Filters</th><th>Pains</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap grow table-icp">
+        <table id="icp-table">
+          <thead><tr><th>ID</th><th>ICP</th><th>Industries</th><th>Locations</th><th>Job Titles</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
     </div>
   </section>
 

@@ -76,8 +76,12 @@ CREATE TABLE IF NOT EXISTS contact_icps (
 CREATE TABLE IF NOT EXISTS offerings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     kind TEXT NOT NULL DEFAULT 'Producto',
+    line TEXT NOT NULL DEFAULT 'DEVELOPMENT',
     name TEXT NOT NULL,
+    purpose TEXT,
+    dynamics TEXT,
     outcome TEXT,
+    quotation TEXT,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -123,6 +127,33 @@ CREATE INDEX IF NOT EXISTS idx_icps_status ON icps(status);
 CREATE INDEX IF NOT EXISTS idx_pain_offerings_offering ON pain_offerings(offering_id);
 CREATE INDEX IF NOT EXISTS idx_icp_pains_pain ON icp_pains(pain_id);
 CREATE INDEX IF NOT EXISTS idx_deals_stage ON deals(stage);
+
+CREATE TABLE IF NOT EXISTS search_configurations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    platform TEXT NOT NULL DEFAULT 'Apollo',
+    object_type TEXT NOT NULL DEFAULT 'People Search',
+    icp_id INTEGER,
+    offering_id INTEGER,
+    status TEXT NOT NULL DEFAULT 'Active',
+    location TEXT,
+    company_sizes TEXT,
+    seniorities TEXT,
+    job_titles TEXT,
+    industries TEXT,
+    exclusions TEXT,
+    pain_signals TEXT,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (icp_id) REFERENCES icps(id) ON DELETE SET NULL,
+    FOREIGN KEY (offering_id) REFERENCES offerings(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_search_configs_icp ON search_configurations(icp_id);
+CREATE INDEX IF NOT EXISTS idx_search_configs_offering ON search_configurations(offering_id);
+CREATE INDEX IF NOT EXISTS idx_search_configs_status ON search_configurations(status);
 `;
 
 function init(dbPath) {
@@ -131,6 +162,16 @@ function init(dbPath) {
   db.pragma("synchronous = NORMAL");
   db.pragma("foreign_keys = ON");
   db.exec(SCHEMA_SQL);
+
+  // Lightweight schema migration for databases created by v1/v2.
+  const offeringColumns = db.prepare("PRAGMA table_info(offerings)").all().map((r) => r.name);
+  const addColumn = (name, sql) => {
+    if (!offeringColumns.includes(name)) db.exec(`ALTER TABLE offerings ADD COLUMN ${sql}`);
+  };
+  addColumn("line", "line TEXT NOT NULL DEFAULT 'DEVELOPMENT'");
+  addColumn("purpose", "purpose TEXT");
+  addColumn("dynamics", "dynamics TEXT");
+  addColumn("quotation", "quotation TEXT");
 }
 
 // ============================================================
@@ -140,7 +181,7 @@ function init(dbPath) {
 function listOfferings() {
   return db
     .prepare(
-      `SELECT o.id, o.kind, o.name, o.outcome, COUNT(po.pain_id) pains_count
+      `SELECT o.id, o.kind, o.line, o.name, o.purpose, o.dynamics, o.outcome, o.quotation, COUNT(po.pain_id) pains_count
        FROM offerings o
        LEFT JOIN pain_offerings po ON po.offering_id = o.id
        GROUP BY o.id
@@ -163,17 +204,21 @@ function saveOffering(data) {
   const tx = db.transaction((data) => {
     let offeringId = data.id;
     if (offeringId) {
-      db.prepare("UPDATE offerings SET kind=?, name=?, outcome=?, notes=? WHERE id=?").run(
+      db.prepare("UPDATE offerings SET kind=?, line=?, name=?, purpose=?, dynamics=?, outcome=?, quotation=?, notes=? WHERE id=?").run(
         data.kind,
+        data.line,
         data.name,
+        data.purpose,
+        data.dynamics,
         data.outcome,
+        data.quotation,
         data.notes,
         offeringId
       );
     } else {
       const info = db
-        .prepare("INSERT INTO offerings(kind, name, outcome, notes) VALUES (?,?,?,?)")
-        .run(data.kind, data.name, data.outcome, data.notes);
+        .prepare("INSERT INTO offerings(kind, line, name, purpose, dynamics, outcome, quotation, notes) VALUES (?,?,?,?,?,?,?,?)")
+        .run(data.kind, data.line, data.name, data.purpose, data.dynamics, data.outcome, data.quotation, data.notes);
       offeringId = info.lastInsertRowid;
     }
 
@@ -324,6 +369,115 @@ function saveIcp(data) {
 
 function deleteIcp(id) {
   db.prepare("DELETE FROM icps WHERE id = ?").run(id);
+}
+
+// ============================================================
+// SEARCH CONFIGURATIONS
+// ============================================================
+
+function parseJsonArray(value) {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return String(value).split(/[,\n]/).map((x) => x.trim()).filter(Boolean);
+  }
+}
+
+function serializeArray(value) {
+  if (Array.isArray(value)) return JSON.stringify(value.filter(Boolean).map(String));
+  return JSON.stringify(String(value || "").split(/[,\n]/).map((x) => x.trim()).filter(Boolean));
+}
+
+function hydrateSearchConfig(row) {
+  if (!row) return null;
+  return {
+    ...row,
+    company_sizes: parseJsonArray(row.company_sizes),
+    seniorities: parseJsonArray(row.seniorities),
+    job_titles: parseJsonArray(row.job_titles),
+    industries: parseJsonArray(row.industries),
+    exclusions: parseJsonArray(row.exclusions),
+    pain_signals: parseJsonArray(row.pain_signals),
+  };
+}
+
+function listSearchConfigurations() {
+  return db.prepare(
+    `SELECT
+       sc.id, sc.code, sc.name, sc.platform, sc.object_type, sc.status,
+       sc.icp_id, i.name icp_name, sc.offering_id, o.name offering_name,
+       sc.location, sc.company_sizes, sc.seniorities, sc.job_titles,
+       sc.industries, sc.exclusions, sc.pain_signals, sc.notes
+     FROM search_configurations sc
+     LEFT JOIN icps i ON i.id = sc.icp_id
+     LEFT JOIN offerings o ON o.id = sc.offering_id
+     ORDER BY sc.id DESC`
+  ).all().map(hydrateSearchConfig);
+}
+
+function getSearchConfiguration(id) {
+  return hydrateSearchConfig(
+    db.prepare("SELECT * FROM search_configurations WHERE id = ?").get(id)
+  );
+}
+
+function saveSearchConfiguration(data) {
+  const code = String(data.code || "").trim().toUpperCase();
+  const name = String(data.name || "").trim();
+  if (!code) throw new Error("El ID de configuración es obligatorio.");
+  if (!name) throw new Error("El nombre de la configuración es obligatorio.");
+
+  const values = [
+    code,
+    name,
+    data.platform || "Apollo",
+    data.object_type || "People Search",
+    data.icp_id || null,
+    data.offering_id || null,
+    data.status || "Active",
+    String(data.location || "").trim(),
+    serializeArray(data.company_sizes),
+    serializeArray(data.seniorities),
+    serializeArray(data.job_titles),
+    serializeArray(data.industries),
+    serializeArray(data.exclusions),
+    serializeArray(data.pain_signals),
+    String(data.notes || "").trim(),
+  ];
+
+  try {
+    if (data.id) {
+      db.prepare(
+        `UPDATE search_configurations SET
+           code=?, name=?, platform=?, object_type=?, icp_id=?, offering_id=?,
+           status=?, location=?, company_sizes=?, seniorities=?, job_titles=?,
+           industries=?, exclusions=?, pain_signals=?, notes=?,
+           updated_at=CURRENT_TIMESTAMP
+         WHERE id=?`
+      ).run(...values, data.id);
+      return data.id;
+    }
+
+    const info = db.prepare(
+      `INSERT INTO search_configurations(
+         code, name, platform, object_type, icp_id, offering_id, status,
+         location, company_sizes, seniorities, job_titles, industries,
+         exclusions, pain_signals, notes
+       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+    ).run(...values);
+    return info.lastInsertRowid;
+  } catch (e) {
+    if (String(e.message).includes("UNIQUE constraint failed")) {
+      throw new Error("Ya existe una configuración con ese ID.");
+    }
+    throw e;
+  }
+}
+
+function deleteSearchConfiguration(id) {
+  db.prepare("DELETE FROM search_configurations WHERE id = ?").run(id);
 }
 
 // ============================================================
@@ -579,6 +733,10 @@ module.exports = {
   getIcpWithPains,
   saveIcp,
   deleteIcp,
+  listSearchConfigurations,
+  getSearchConfiguration,
+  saveSearchConfiguration,
+  deleteSearchConfiguration,
   getContactRaw,
   addContact,
   updateContact,
