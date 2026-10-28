@@ -201,6 +201,10 @@ function getOffering(id) {
 }
 
 function saveOffering(data) {
+
+  if (!String(data.name || "").trim()) {
+    throw new Error("El nombre del offering es obligatorio.");
+  }
   const tx = db.transaction((data) => {
     let offeringId = data.id;
     if (offeringId) {
@@ -261,6 +265,10 @@ function getPain(id) {
 }
 
 function savePain(data) {
+
+  if (!String(data.name || "").trim()) {
+    throw new Error("El nombre del pain es obligatorio.");
+  }
   if (data.id) {
     db.prepare("UPDATE pains SET category=?, name=?, notes=? WHERE id=?").run(
       data.category,
@@ -305,6 +313,9 @@ function getIcpWithPains(id) {
 }
 
 function saveIcp(data) {
+  if (!String(data.name || "").trim()) {
+    throw new Error("El nombre del ICP es obligatorio.");
+  }
   const total = WEIGHT_COLUMNS.reduce((sum, col) => sum + Number(data[col] || 0), 0);
   if (total !== 100) {
     throw new Error(`La suma de los pesos debe ser exactamente 100.\n\nTotal actual: ${total}`);
@@ -436,6 +447,14 @@ function saveSearchConfiguration(data) {
   if (!code) throw new Error("El ID de configuración es obligatorio.");
   if (!name) throw new Error("El nombre de la configuración es obligatorio.");
 
+  const allowedPlatforms = ["Apollo", "LeadForge", "Manual"];
+  if (!allowedPlatforms.includes(data.platform || "Apollo")) {
+    throw new Error(`Platform inválida: ${data.platform}`);
+  }
+  const allowedStatuses = ["Active", "Draft", "Inactive"];
+  if (!allowedStatuses.includes(data.status || "Active")) {
+    throw new Error(`Status inválido: ${data.status}`);
+  }
   const values = [
     code,
     name,
@@ -544,6 +563,9 @@ function addContact(data) {
 }
 
 function updateContact(id, data) {
+  if (!String(data.name || "").trim()) {
+    throw new Error("El nombre del contacto es obligatorio.");
+  }
   const tx = db.transaction((id, data) => {
     const orgId = upsertOrganization(data.organization, data.location, data.industry);
     db.prepare(
