@@ -245,6 +245,9 @@ function saveOffering(data) {
 }
 
 function deleteOffering(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   db.prepare("DELETE FROM offerings WHERE id = ?").run(id);
 }
 
@@ -293,6 +296,9 @@ function savePain(data) {
 }
 
 function deletePain(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   db.prepare("DELETE FROM pains WHERE id = ?").run(id);
 }
 
@@ -398,6 +404,9 @@ function saveIcp(data) {
 }
 
 function deleteIcp(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   db.prepare("DELETE FROM icps WHERE id = ?").run(id);
 }
 
@@ -519,6 +528,9 @@ function saveSearchConfiguration(data) {
 }
 
 function deleteSearchConfiguration(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   db.prepare("DELETE FROM search_configurations WHERE id = ?").run(id);
 }
 
@@ -697,6 +709,9 @@ function saveDeal(data) {
   const allowedStages = ["Prospecting", "Contactado", "Propuesta Enviada", "Negociación", "Ganado", "Perdido"];
   if (!allowedStages.includes(data.stage)) {
     throw new Error(`Stage inválido: ${data.stage}`);
+  }
+  if (!Number.isFinite(data.contact_id)) {
+    throw new Error("contact_id inválido.");
   }
   db.prepare(
     `INSERT INTO deals(contact_id, stage, next_follow_up, notes, updated_at)
