@@ -35,6 +35,9 @@ function containsMatch(value, criteria) {
  */
 function evaluate(contact, organization, icp) {
   let score = 0;
+  for (const k of ["weight_title", "weight_company", "weight_location", "weight_industry", "weight_keywords"]) {
+    if (!Number.isFinite(icp[k])) throw new Error(`ICP con peso inválido: ${k}`);
+  }
   const evidence = [];
 
   if (containsMatch(contact.job_title, icp.job_titles)) {

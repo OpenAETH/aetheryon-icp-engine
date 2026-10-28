@@ -192,6 +192,9 @@ function listOfferings() {
 
 function getOffering(id) {
   const row = db.prepare("SELECT * FROM offerings WHERE id = ?").get(id);
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   if (!row) return null;
   const painIds = db
     .prepare("SELECT pain_id FROM pain_offerings WHERE offering_id = ?")
@@ -272,6 +275,9 @@ function listPainsWithCounts() {
 }
 
 function getPain(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   return db.prepare("SELECT * FROM pains WHERE id = ?").get(id);
 }
 
@@ -318,6 +324,9 @@ function listActiveIcps() {
 
 function getIcpWithPains(id) {
   const row = db.prepare("SELECT * FROM icps WHERE id = ?").get(id);
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   if (!row) return null;
   const painIds = db
     .prepare("SELECT pain_id FROM icp_pains WHERE icp_id = ?")
@@ -457,6 +466,9 @@ function listSearchConfigurations() {
 }
 
 function getSearchConfiguration(id) {
+  if (!Number.isFinite(id)) {
+    throw new Error("id inválido.");
+  }
   return hydrateSearchConfig(
     db.prepare("SELECT * FROM search_configurations WHERE id = ?").get(id)
   );
@@ -701,6 +713,9 @@ function getRecommendationForIcp(icpId) {
 // ============================================================
 
 function getDeal(contactId) {
+  if (!Number.isFinite(contactId)) {
+    throw new Error("contact_id inválido.");
+  }
   return db.prepare("SELECT * FROM deals WHERE contact_id = ?").get(contactId);
 }
 
