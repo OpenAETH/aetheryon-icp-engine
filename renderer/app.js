@@ -696,9 +696,9 @@ async function duplicateSearchConfiguration() {
   data.id = null;
   data.code = code;
   data.name = `${data.name} · Copy`;
-  await bridge.searchConfigurations.save(data);
+  const newId = await bridge.searchConfigurations.save(data);
   await refreshSearchConfigurations();
-  await loadSearchConfiguration((await bridge.searchConfigurations.list())[0].id);
+  await loadSearchConfiguration(newId);
 }
 
 async function deleteSearchConfiguration() {
