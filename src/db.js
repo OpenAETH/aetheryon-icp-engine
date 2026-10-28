@@ -205,6 +205,14 @@ function saveOffering(data) {
   if (!String(data.name || "").trim()) {
     throw new Error("El nombre del offering es obligatorio.");
   }
+  const allowedKinds = ["Producto", "Servicio", "Proyecto"];
+  if (!allowedKinds.includes(data.kind || "Producto")) {
+    throw new Error(`Kind inválido: ${data.kind}`);
+  }
+  const allowedLines = ["AUDIT", "ASSESSMENT", "DEVELOPMENT", "IMPLEMENTATION", "SUPPORT"];
+  if (!allowedLines.includes(data.line || "DEVELOPMENT")) {
+    throw new Error(`Line inválida: ${data.line}`);
+  }
   const tx = db.transaction((data) => {
     let offeringId = data.id;
     if (offeringId) {
@@ -315,6 +323,10 @@ function getIcpWithPains(id) {
 function saveIcp(data) {
   if (!String(data.name || "").trim()) {
     throw new Error("El nombre del ICP es obligatorio.");
+  }
+  const allowedStatuses = ["Active", "Inactive", "Draft"];
+  if (!allowedStatuses.includes(data.status || "Active")) {
+    throw new Error(`Status inválido: ${data.status}`);
   }
   const total = WEIGHT_COLUMNS.reduce((sum, col) => sum + Number(data[col] || 0), 0);
   if (total !== 100) {
@@ -454,6 +466,10 @@ function saveSearchConfiguration(data) {
   const allowedStatuses = ["Active", "Draft", "Inactive"];
   if (!allowedStatuses.includes(data.status || "Active")) {
     throw new Error(`Status inválido: ${data.status}`);
+  }
+  const allowedObjects = ["People Search", "Company Search"];
+  if (!allowedObjects.includes(data.object_type || "People Search")) {
+    throw new Error(`Object inválido: ${data.object_type}`);
   }
   const values = [
     code,
