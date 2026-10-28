@@ -67,3 +67,7 @@ Next integration boundary:
 `ICP → Search Configuration → Acquisition Adapter → Leads → ICP Scoring → Offering`
 
 This keeps provider-specific API logic out of the ICP definition and evaluation engine.
+
+---
+
+_AETHERYON Systems · [aetheryon.onrender.com](https://aetheryon.onrender.com) · Guido Miguel Gómez — Specific Consultant · Consultor Específico_

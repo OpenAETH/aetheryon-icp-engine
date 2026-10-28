@@ -19,3 +19,6 @@ build/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Repo Report
+repo_report--*.txt

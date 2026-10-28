@@ -100,3 +100,13 @@ The current implementation includes:
 - Configuration duplication.
 
 Provider API integration is intentionally outside this phase.
+
+---
+
+## Autoría
+
+**AETHERYON Systems** · [aetheryon.onrender.com](https://aetheryon.onrender.com)
+
+**Guido Miguel Gómez** — Specific Consultant · Consultor Específico
+
+© AETHERYON Systems. Todos los derechos reservados.

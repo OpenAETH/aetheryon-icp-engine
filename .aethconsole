@@ -1,0 +1,606 @@
+# AETHERYON DevDeck — blueprint del proyecto (schema aethconsole/1)
+# Archivo único y autoconsistente. Los campos derivados se regeneran al inspeccionar;
+# para proteger un valor manual añade el nombre del campo a `manual_fields` del objeto
+# o marca el objeto con `managed: manual`. No incluyas secretos.
+meta:
+  schema: aethconsole/1
+  schema_version: 1
+  blueprint_id: df69e47ee0f44cfa873602c3d6133016
+  generator:
+    name: aetheryon-devdeck
+    version: 0.1.0
+  created_at: '2026-10-27T23:17:40Z'
+  updated_at: '2026-10-27T23:17:40Z'
+  inspected_at: '2026-10-27T23:17:40Z'
+  fingerprint: d7baade99f6b697e
+project:
+  name: aetheryon-icp-engine
+  description: null
+  root: .
+  kind: single_component
+  vcs: git
+  languages:
+  - id: lang.javascript
+    name: JavaScript
+    files: 5
+    share: 0.5556
+    status: inferred
+    confidence: high
+    evidence:
+    - source: filesystem
+      detail: 5 archivo(s)
+  - id: lang.css
+    name: CSS
+    files: 2
+    share: 0.2222
+    status: inferred
+    confidence: high
+    evidence:
+    - source: filesystem
+      detail: 2 archivo(s)
+  - id: lang.html
+    name: HTML
+    files: 2
+    share: 0.2222
+    status: inferred
+    confidence: high
+    evidence:
+    - source: filesystem
+      detail: 2 archivo(s)
+  status: inferred
+  confidence: high
+  evidence:
+  - source: filesystem
+    detail: 18 archivo(s)
+topology:
+  components:
+  - id: cmp.root
+    name: aetheryon-icp-engine
+    path: .
+    kind: application
+    languages:
+    - lang.javascript
+    - lang.css
+    - lang.html
+    frameworks:
+    - name: Electron
+      version: ^31.7.7
+      status: declared
+      confidence: high
+      evidence:
+      - source: package.json
+        detail: devDependencies.electron
+    package_managers:
+    - name: npm
+      status: declared
+      confidence: high
+      evidence:
+      - source: package-lock.json
+    manifests:
+    - package.json
+    entry_points:
+    - ent.root.npm-start
+    - ent.root.src-main-js
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+  relations: []
+discovery:
+  stats:
+    files: 18
+    dirs: 5
+    bytes: 202817
+    truncated: false
+    by_class:
+      config: 3
+      data: 1
+      docs: 5
+      source: 9
+    by_language:
+      CSS: 2
+      HTML: 2
+      JavaScript: 5
+  exclusions:
+  - .git
+  - .hg
+  - .svn
+  - __pycache__
+  - node_modules
+  - .venv
+  - venv
+  - .mypy_cache
+  - .pytest_cache
+  - .ruff_cache
+  - .tox
+  - .eggs
+  - '*.egg-info'
+  - dist
+  - build
+  - .idea
+  - .vscode
+  - .next
+  - .cache
+  - coverage
+  - site-packages
+  - .DS_Store
+  - .aethconsole
+  notable_files:
+  - path: .gitignore
+    class: config
+    language: null
+    component: cmp.root
+  - path: DB en.txt
+    class: docs
+    language: null
+    component: cmp.root
+  - path: docs/IMPLEMENTATION_PHASES.md
+    class: docs
+    language: null
+    component: cmp.root
+  - path: docs/PHASE_PROPOSAL_OFFERING.md
+    class: docs
+    language: null
+    component: cmp.root
+  - path: docs/TEST_REPORT.md
+    class: docs
+    language: null
+    component: cmp.root
+  - path: package-lock.json
+    class: config
+    language: null
+    component: cmp.root
+  - path: package.json
+    class: config
+    language: null
+    component: cmp.root
+  - path: README.md
+    class: docs
+    language: null
+    component: cmp.root
+  - path: src/main.js
+    class: source
+    language: JavaScript
+    component: cmp.root
+  entry_points:
+  - id: ent.root.npm-start
+    component: cmp.root
+    name: npm run start
+    path: null
+    kind: node_script
+    origin: readme
+    primary: true
+    command:
+      tool: tool.npm
+      program: npm
+      args:
+      - run
+      - start
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: scripts.start = electron .
+    - source: README.md
+      line: 12
+      detail: npm start
+  - id: ent.root.src-main-js
+    component: cmp.root
+    name: main.js
+    path: src/main.js
+    kind: script
+    origin: manifest
+    primary: false
+    command:
+      tool: tool.node
+      program: node
+      args:
+      - src/main.js
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: main = src/main.js
+  scripts:
+  - id: scr.root.postinstall
+    component: cmp.root
+    name: postinstall
+    command: electron-rebuild -f -w better-sqlite3
+    origin: package.json
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: scripts.postinstall
+  - id: scr.root.start
+    component: cmp.root
+    name: start
+    command: electron .
+    origin: package.json
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: scripts.start
+  dependencies:
+  - component: cmp.root
+    ecosystem: npm
+    name: better-sqlite3
+    spec: ^11.10.0
+    scope: runtime
+    source: package.json
+  - component: cmp.root
+    ecosystem: npm
+    name: '@electron/rebuild'
+    spec: ^4.2.0
+    scope: dev
+    source: package.json
+  - component: cmp.root
+    ecosystem: npm
+    name: electron
+    spec: ^31.7.7
+    scope: dev
+    source: package.json
+  documentation:
+  - source: README.md
+    line: 11
+    heading: Setup
+    text: npm install
+    kind: install
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 12
+    heading: Setup
+    text: npm start
+    kind: run
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 15
+    heading: Setup
+    text: npm install
+    kind: install
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 22
+    heading: Setup
+    text: npm install
+    kind: install
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 29
+    heading: Estructura
+    text: src/
+    kind: other
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 30
+    heading: Estructura
+    text: 'main.js       proceso principal: crea la ventana, inicializa la DB, registra IPC'
+    kind: other
+    entry_point: null
+    exists: false
+  - source: README.md
+    line: 31
+    heading: Estructura
+    text: preload.js    contextBridge -- expone window.api al renderer (contextIsolation activado)
+    kind: other
+    entry_point: null
+    exists: false
+  - source: README.md
+    line: 32
+    heading: Estructura
+    text: db.js         schema SQLite + queries (better-sqlite3, sincrono)
+    kind: other
+    entry_point: null
+    exists: false
+  - source: README.md
+    line: 33
+    heading: Estructura
+    text: 'engine.js      ICPEngine: normalize/tokens/containsMatch/evaluate (funciones puras)'
+    kind: other
+    entry_point: null
+    exists: false
+  - source: README.md
+    line: 34
+    heading: Estructura
+    text: renderer/
+    kind: other
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 35
+    heading: Estructura
+    text: index.html    shell de la app (5 tabs)
+    kind: other
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 36
+    heading: Estructura
+    text: styles.css    tema oscuro AETHERYON (teal
+    kind: other
+    entry_point: null
+    exists: null
+  - source: README.md
+    line: 37
+    heading: Estructura
+    text: 'app.js        UI: tablas, formularios, wiring con window.api'
+    kind: other
+    entry_point: null
+    exists: false
+  - source: README.md
+    line: 78
+    heading: Empaquetar como instalador (opcional, no incluido)
+    text: npm start
+    kind: run
+    entry_point: null
+    exists: null
+environments:
+  tools:
+  - id: tool.node
+    name: Node.js
+    kind: runtime
+    path: C:\nvm4w\nodejs\node.EXE
+    version: 22.23.2
+    available: true
+    checked_at: '2026-10-27T23:17:40Z'
+    status: available
+    confidence: high
+    evidence:
+    - source: PATH
+      detail: C:\nvm4w\nodejs\node.EXE
+  - id: tool.npm
+    name: npm
+    kind: package_manager
+    path: C:\nvm4w\nodejs\npm.CMD
+    version: 12.2.0
+    available: true
+    checked_at: '2026-10-27T23:17:40Z'
+    status: available
+    confidence: high
+    evidence:
+    - source: PATH
+      detail: C:\nvm4w\nodejs\npm.CMD
+  components:
+  - id: env.root.node
+    component: cmp.root
+    kind: node
+    requirement: null
+    virtualenv: null
+    interpreter: null
+    lockfiles:
+    - package-lock.json
+    status: inferred
+    confidence: low
+    evidence:
+    - source: package.json
+    ready: true
+    missing_dependencies: []
+    checked_at: '2026-10-27T23:17:40Z'
+interfaces:
+  cli: []
+  endpoints: []
+  ports: []
+  ui:
+  - id: if.ui.root.electron
+    component: cmp.root
+    kind: electron
+    entry_point: ent.root.src-main-js
+    modes:
+    - desktop
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: dependencia electron
+operations:
+  catalog:
+  - id: op.root.run-src-main-js
+    label: node src/main.js
+    component: cmp.root
+    category: run
+    command:
+      tool: tool.node
+      program: node
+      args:
+      - src/main.js
+    cwd: .
+    preconditions:
+    - kind: tool_available
+      ref: tool.node
+    - kind: file_exists
+      path: src/main.js
+    - kind: environment
+      ref: env.root.node
+      detail: dependencies
+    effects:
+    - starts_process
+    permissions:
+    - execute
+    success:
+      kind: exit_code
+      expected: 0
+    source:
+    - ent.root.src-main-js
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: main = src/main.js
+  - id: op.root.npm-postinstall
+    label: npm run postinstall
+    component: cmp.root
+    category: install
+    command:
+      tool: tool.npm
+      program: npm
+      args:
+      - run
+      - postinstall
+    cwd: .
+    preconditions:
+    - kind: tool_available
+      ref: tool.npm
+    - kind: file_exists
+      path: package.json
+    - kind: authorization
+      detail: installs,network,alters_environment
+    effects:
+    - installs
+    - network
+    - alters_environment
+    permissions:
+    - execute
+    - install
+    - network
+    success:
+      kind: exit_code
+      expected: 0
+    source:
+    - scr.root.postinstall
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: scripts.postinstall
+  - id: op.root.npm-start
+    label: npm run start
+    component: cmp.root
+    category: run
+    command:
+      tool: tool.npm
+      program: npm
+      args:
+      - run
+      - start
+    cwd: .
+    preconditions:
+    - kind: tool_available
+      ref: tool.npm
+    - kind: file_exists
+      path: package.json
+    - kind: environment
+      ref: env.root.node
+      detail: dependencies
+    effects:
+    - starts_process
+    permissions:
+    - execute
+    success:
+      kind: exit_code
+      expected: 0
+    source:
+    - scr.root.start
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+      detail: scripts.start
+  - id: op.root.npm-install
+    label: npm install
+    component: cmp.root
+    category: install
+    command:
+      tool: tool.npm
+      program: npm
+      args:
+      - install
+    cwd: .
+    preconditions:
+    - kind: tool_available
+      ref: tool.npm
+    - kind: file_exists
+      path: package.json
+    - kind: authorization
+      detail: installs,network,alters_environment
+    effects:
+    - installs
+    - network
+    - alters_environment
+    permissions:
+    - execute
+    - install
+    - network
+    success:
+      kind: exit_code
+      expected: 0
+    source: []
+    status: declared
+    confidence: high
+    evidence:
+    - source: package.json
+  - id: op.root.doc-npm-start
+    label: npm start
+    component: cmp.root
+    category: run
+    command:
+      tool: tool.npm
+      program: npm
+      args:
+      - start
+    cwd: .
+    preconditions:
+    - kind: tool_available
+      ref: tool.npm
+    - kind: environment
+      ref: env.root.node
+      detail: dependencies
+    effects:
+    - starts_process
+    permissions:
+    - execute
+    success:
+      kind: exit_code
+      expected: 0
+    source: []
+    status: declared
+    confidence: high
+    evidence:
+    - source: README.md
+      line: 12
+      detail: npm start
+docker:
+  dockerfiles: []
+  compose_files: []
+  services: []
+runtime:
+  observed_at: '2026-10-27T23:18:01Z'
+  processes: []
+  git:
+    present: true
+    branch: main
+    detached: false
+  docker:
+    cli_available: null
+    cli_path: null
+    compose_plugin: null
+    daemon: unknown
+    version: null
+    error: null
+    images: []
+    containers: []
+  verifications:
+  - operation: op.root.npm-start
+    fingerprint: 0246c7b5a354
+    verified_at: '2026-10-27T23:18:01Z'
+    exit_code: 0
+    duration_s: 15.037313
+  history:
+  - id: run.e637b815
+    operation: op.root.npm-start
+    label: npm run start
+    state: finished
+    exit_code: 0
+    started_at: '2026-10-27T23:17:46Z'
+    duration_s: 15.037
+    log_ref:
+      path: ~/.devdeck/logs/11721441c000/20261027-201746-e637b815.log
+      bytes: 102
+      lines: 3
+diagnostics:
+  findings: []

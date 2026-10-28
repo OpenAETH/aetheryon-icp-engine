@@ -1,13 +1,27 @@
 {
   "name": "aetheryon-icp-engine",
   "version": "1.0.0",
-  "description": "AETHERYON Systems - ICP Segmentation Engine (Propuesta -> Pains -> ICP -> Contactos -> Pipeline -> Intelligence)",
+  "description": "AETHERYON Systems · ICP Segmentation Engine (Propuesta -> Pains -> ICP -> Contactos -> Pipeline -> Intelligence)",
+  "homepage": "https://aetheryon.onrender.com",
+  "keywords": [
+    "aetheryon",
+    "icp",
+    "segmentation",
+    "electron",
+    "sqlite",
+    "crm",
+    "prospecting"
+  ],
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
-  "author": "AETHERYON Systems",
+  "author": {
+    "name": "Guido Miguel Gómez",
+    "url": "https://aetheryon.onrender.com",
+    "role": "Specific Consultant · Consultor Específico"
+  },
   "license": "UNLICENSED",
   "dependencies": {
     "better-sqlite3": "^11.10.0"
@@ -15,5 +29,11 @@
   "devDependencies": {
     "@electron/rebuild": "^4.2.0",
     "electron": "^31.7.7"
-  }
+  },
+  "contributors": [
+    {
+      "name": "AETHERYON Systems",
+      "url": "https://aetheryon.onrender.com"
+    }
+  ]
 }
