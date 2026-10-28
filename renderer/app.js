@@ -142,7 +142,7 @@ function switchTab(name) {
 
 function splitList(value) {
   return String(value || "")
-    .split(/[,\\n]/)
+    .split(/[,\n]/)
     .map((x) => x.trim())
     .filter(Boolean);
 }
@@ -1022,7 +1022,8 @@ async function refreshStatusBar() {
   const s = await bridge.status.counts();
   document.getElementById("status-text").textContent =
     `Offerings: ${s.offerings}    ·    Pains: ${s.pains}    ·    ICPs activos: ${s.activeIcps}` +
-    `    ·    Contactos: ${s.contacts}    ·    Deals abiertos: ${s.openDeals}    ·    Evaluaciones: ${s.evaluations}`;
+    `    ·    Contactos: ${s.contacts}    ·    Deals abiertos: ${s.openDeals}    ·    Evaluaciones: ${s.evaluations}` +
+    `    ·    Searches: ${s.searchConfigurations}`;
 }
 
 // ============================================================

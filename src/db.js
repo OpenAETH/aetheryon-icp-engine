@@ -715,6 +715,7 @@ function statusCounts() {
     offerings: one("SELECT COUNT(*) c FROM offerings"),
     pains: one("SELECT COUNT(*) c FROM pains"),
     activeIcps: one("SELECT COUNT(*) c FROM icps WHERE LOWER(TRIM(status))='active'"),
+    searchConfigurations: one("SELECT COUNT(*) c FROM search_configurations"),
     contacts: one("SELECT COUNT(*) c FROM contacts"),
     openDeals: one("SELECT COUNT(*) c FROM deals WHERE stage NOT IN ('Ganado','Perdido')"),
     evaluations: one("SELECT COUNT(*) c FROM contact_icps"),
