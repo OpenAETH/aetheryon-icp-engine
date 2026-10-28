@@ -589,6 +589,10 @@ function storeContactIcpResults(contactId, results) {
   tx(contactId, results);
 }
 
+function clearContactIcpResults(contactId) {
+  db.prepare("DELETE FROM contact_icps WHERE contact_id = ?").run(contactId);
+}
+
 function getBestIcpForContact(contactId) {
   return db
     .prepare(
@@ -743,6 +747,7 @@ module.exports = {
   listContactsWithBestMatch,
   listAllContactIds,
   storeContactIcpResults,
+  clearContactIcpResults,
   getBestIcpForContact,
   getRecommendationForIcp,
   getDeal,

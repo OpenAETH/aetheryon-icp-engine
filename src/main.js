@@ -59,7 +59,10 @@ function evaluateAndStoreAll(contactId) {
     : null;
 
   const icps = db.listActiveIcps();
-  if (!icps.length) return null;
+  if (!icps.length) {
+    db.clearContactIcpResults(contactId);
+    return null;
+  }
 
   const results = icps.map((icp) => ({ icp, result: engine.evaluate(contact, organization, icp) }));
   db.storeContactIcpResults(contactId, results);

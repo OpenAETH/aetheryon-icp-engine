@@ -929,6 +929,11 @@ async function loadDeal(id) {
   dealContactId = contactIdArg;
 
   const contact = await bridge.contacts.get(contactIdArg);
+  if (!contact) {
+    clearDealForm();
+    await showModal("Pipeline", "El contacto ya no existe.");
+    return;
+  }
   document.getElementById("deal-contact-label").textContent = contact.organization
     ? `${contact.name} · ${contact.organization}`
     : contact.name;
