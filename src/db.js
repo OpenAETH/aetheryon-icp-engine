@@ -310,6 +310,13 @@ function saveIcp(data) {
     throw new Error(`La suma de los pesos debe ser exactamente 100.\n\nTotal actual: ${total}`);
   }
 
+  for (const col of WEIGHT_COLUMNS) {
+    const n = Number(data[col]);
+    if (!Number.isInteger(n) || n < 0) {
+      throw new Error("Cada peso debe ser un número entero igual o mayor a 0.");
+    }
+  }
+
   const tx = db.transaction((data) => {
     let icpId = data.id;
     const values = [
@@ -518,6 +525,10 @@ function getContactRaw(id) {
 }
 
 function addContact(data) {
+
+  if (!String(data.name || "").trim()) {
+    throw new Error("El nombre del contacto es obligatorio.");
+  }
   const tx = db.transaction((data) => {
     const orgId = upsertOrganization(data.organization, data.location, data.industry);
     const info = db
@@ -644,6 +655,11 @@ function getDeal(contactId) {
 }
 
 function saveDeal(data) {
+
+  const allowedStages = ["Prospecting", "Contactado", "Propuesta Enviada", "Negociación", "Ganado", "Perdido"];
+  if (!allowedStages.includes(data.stage)) {
+    throw new Error(`Stage inválido: ${data.stage}`);
+  }
   db.prepare(
     `INSERT INTO deals(contact_id, stage, next_follow_up, notes, updated_at)
      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
